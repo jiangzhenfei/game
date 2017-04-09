@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+	<title>Document</title>
+	<link rel="stylesheet" href="js/style.css">
+	<script src="js/jquery.js"></script>
+</head>
+<body>
+	<div class="tip">请按顺序从1排列下面的数字,做到最有有惊喜</div>
+	<div id="container">
+		<div></div>
+		<div></div>
+	</div>
+	<h3 class="error">孟博涵你答错了</h3>
+	<h3 class="success">涵涵你真行！！！</h3>
+	<div class="results">哈哈，打电话给你舅舅想要啥</div>
+	<script>
+		var game={
+			step:1,
+
+			init:function(){
+				$('h3').hide()
+				this.oldNum=0;
+				this.firstClick=true;
+				this.numStore()
+				this.showNum()
+				this.showCss()
+				this.numClick()
+			},
+			numStore:function(){
+				this.numStrory=[];
+				if(this.step==1){this.needNum=3;}
+				if(this.step==2){this.needNum=4;}
+				if(this.step==3){this.needNum=5;}
+				if(this.step==4){this.needNum=6;}
+				this.allNum=this.needNum*this.needNum;
+				for(var i=1;i<=this.allNum;i++){
+					this.numStrory.push(i)
+				}
+				this.numStrory.sort(function(){
+					return 0.5-Math.random()
+				})
+				console.log(this.numStrory)
+			},
+			showNum:function(){
+				var con=this.numStrory.map(function(val){
+					return '<div data-id="'+val+'">'+val+'</div>'
+				})
+				$('#container').html(con)
+			},
+			showCss:function(){
+				var width=$('#container').width()/this.needNum;
+				$('#container div').css({
+					width:width,
+					height:width,
+					fontSize:width/2
+				})
+			},
+			numClick:function(){
+				var self=this;
+				$('#container').on('click','div',function(){
+					
+					if($(this).data('id')-self.oldNum==1){
+						$('h3.error').hide().siblings('h3.success').show()
+						if($(this).data('id')==self.allNum&&self.step==4){
+							$('div.results').show();
+							return;
+						}
+						self.oldNum=$(this).data('id')
+						if($(this).data('id')==self.allNum){
+							$('#container').off('click','div')
+							self.step++;
+							self.init()
+						}
+						return;
+					}else{
+						$('h3.success').hide().siblings('h3.error').show()
+					}
+					
+
+				})
+			}
+
+		}
+		
+		game.init()
+	</script>
+</body>
+</html>
